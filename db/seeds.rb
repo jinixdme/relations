@@ -5,3 +5,10 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+# Self-referential one-to-one relation:
+son = User.create(first_name: 'John')
+mother = User.create(first_name: 'Heidi')
+son.mother = mother
+puts son.mother.first_name
+#=> Heidi
