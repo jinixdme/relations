@@ -11,11 +11,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141103174541) do
+ActiveRecord::Schema.define(version: 20141109130459) do
+
+  create_table "likes", force: true do |t|
+    t.integer  "video_id"
+    t.integer  "playlist_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "playlists", force: true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.boolean  "published",  default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "first_name"
     t.integer  "mother_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "videos", force: true do |t|
+    t.string   "title"
+    t.string   "engine"
+    t.integer  "duration"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
