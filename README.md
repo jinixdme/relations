@@ -110,4 +110,4 @@ john.likes.each { |like| puts like.video.title }
 => Orange
 ```
 
-Inspired by [Clipflakes](http://blog.clipflakes.tv/2010/01/24/eigene-clipsammlung-komfortabel-verwalten-2/)' video search engine and playlist creation.
+Inspired by [Clipflakes](http://blog.clipflakes.tv/2011/05/26/relaunch-der-website/)' video search engine and playlist creation.
