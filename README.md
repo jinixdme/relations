@@ -20,13 +20,13 @@ $ rake db:migrate
 
 **User model**
 
-```
+```ruby
 has_one :mother, class_name: 'User', foreign_key: 'mother_id'
 ```
 
 **db/seed**
 
-```
+```ruby
 john = User.create(first_name: 'John')
 heidi = User.create(first_name: 'Heidi')
 john.mother = heidi
@@ -49,7 +49,7 @@ $ rake db:migrate
 
 **Playlist model**
 
-```
+```ruby
 belongs_to :user
 has_many :likes
 has_many :videos, :through => :likes
@@ -57,21 +57,21 @@ has_many :videos, :through => :likes
 
 **User model**
 
-```
+```ruby
 has_many :playlists
 has_many :likes, :through => :playlists
 ```
 
 **Like model**
 
-```
+```ruby
 belongs_to :video
 belongs_to :playlist
 ```
 
 **db/seed**
 
-```
+```ruby
 cat = Video.create(title: 'Cat', engine: 'youtube', duration: 90)
 dog = Video.create(title: 'Dog', engine: 'youtube', duration: 120)
 banana = Video.create(title: 'Banana', engine: 'vimeo', duration: 140)
@@ -86,7 +86,7 @@ puts playlist.videos.count
 => 2
 ```
 
-```
+```ruby
 playlist = Playlist.create(name: 'Fruits', user: john)
 playlist.likes << Like.create(video: banana)
 playlist.likes << Like.create(video: apple)
@@ -98,7 +98,7 @@ puts playlist.videos.count
 => 3
 ```
 
-```
+```ruby
 john.likes.each { |like| puts like.video.title } 
 ```
 
