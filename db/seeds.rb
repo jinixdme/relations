@@ -8,7 +8,7 @@
 
 # $ rake db:setup
 
-# Self-referential one-to-one relationship:
+puts "Self-referential one-to-one relationship:"
 john = User.create(first_name: 'John')
 heidi = User.create(first_name: 'Heidi')
 
@@ -17,7 +17,7 @@ john.mother = heidi
 puts john.mother.first_name
 #=> Heidi
 
-# Join model many-to-many relationship:
+puts "Join model many-to-many relationship:"
 animals = Video.create([
   {title: 'Cat', engine: 'youtube', duration: 90},
   {title: 'Dog', engine: 'youtube', duration: 120}])
@@ -48,6 +48,7 @@ john.likes.each{|like| puts like.video.title}
 #=> Apple
 #=> Orange
 
+puts "Order a has_many through association:"
 john.videos.sort(:title).each{|video| 
   puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
 puts ""
@@ -59,7 +60,6 @@ puts ""
 john.videos.sort(:duration).each{|video| 
   puts Rainbow("#{video.duration}").yellow + " seconds is the duration of #{video.title} from #{video.engine.titleize}"}
 puts ""
-
 #=> Apple from Dailymotion has a duration of 240 seconds
 #=> Banana from Vimeo has a duration of 140 seconds
 #=> Cat from Youtube has a duration of 90 seconds
@@ -81,9 +81,15 @@ puts ""
 john.videos.order(:title).each{|video| 
   puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
 puts ""
-
 #=> Apple from Dailymotion has a duration of 240 seconds
 #=> Banana from Vimeo has a duration of 140 seconds
 #=> Cat from Youtube has a duration of 90 seconds
 #=> Dog from Youtube has a duration of 120 seconds
 #=> Orange from Dailymotion has a duration of 30 seconds
+
+puts "Combined scope conditions:"
+john.videos.duration_min(100).sort(:engine).each{|video| 
+  puts Rainbow("#{video.engine.titleize}").yellow + " #{video.title} has a duration of #{video.duration} seconds"}
+#=> Dailymotion Apple has a duration of 240 seconds
+#=> Vimeo Banana has a duration of 140 seconds
+#=> Youtube Dog has a duration of 120 seconds

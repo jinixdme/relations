@@ -189,3 +189,27 @@ john.videos.order(:title).each{|video|
 ```
 
 Inspired by the article [Sorting and Reordering Has Many Through Associations With the ActsAsList Gem](http://easyactiverecord.com/blog/2014/11/11/sorting-and-reordering-lists-with-the-actsaslist-gem/).
+
+
+## Combined scope conditions
+While the sort scope in the previous example was just another way to order a query result we now want a new scope condition for returning only videos with given minimum length.
+
+**Video model**
+
+```ruby
+scope :duration_min, ->(seconds) { where(duration: seconds.to_i..Float::INFINITY) }
+```
+
+Scopes can be combined: All videos with at least 100 seconds will be ordered by their engine names.
+
+```ruby
+john.videos.duration_min(100).sort(:engine).each{|video| 
+  puts Rainbow("#{video.engine.titleize}").yellow + " #{video.title} has a duration of #{video.duration} seconds"}
+puts ""
+```
+
+```
+=> Dailymotion Apple has a duration of 240 seconds
+=> Vimeo Banana has a duration of 140 seconds
+=> Youtube Dog has a duration of 120 seconds
+```
