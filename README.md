@@ -118,7 +118,7 @@ Inspired by [Clipflakes](http://blog.clipflakes.tv/2011/05/26/relaunch-der-websi
 
 
 ##Order a has_many through association
-Now we want a sorted list of all videos John likes. The list has to be sorted by a given video attribute, e.g. the name of the engine or the duration. Instead of iterate through all Like's we want the video list through a has_many through association. Example:
+Now we want a sorted list of all videos John likes. The list has to be sorted by a given video attribute, e.g. the name of the engine or the duration. Instead of iterate through all Like's we want the video list through an additional has_many through association. Example:
 
 ```ruby
 videos = john.videos.sort(:engine)
@@ -171,6 +171,21 @@ puts ""
 => 120 seconds is the duration of Dog from Youtube
 => 140 seconds is the duration of Banana from Vimeo
 => 240 seconds is the duration of Apple from Dailymotion
+```
+
+The ActiveRecord query method order() works the same:
+
+```ruby
+john.videos.order(:title).each{|video| 
+  puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
+```
+
+```
+=> Apple from Dailymotion has a duration of 240 seconds
+=> Banana from Vimeo has a duration of 140 seconds
+=> Cat from Youtube has a duration of 90 seconds
+=> Dog from Youtube has a duration of 120 seconds
+=> Orange from Dailymotion has a duration of 30 seconds
 ```
 
 Inspired by the article [Sorting and Reordering Has Many Through Associations With the ActsAsList Gem](http://easyactiverecord.com/blog/2014/11/11/sorting-and-reordering-lists-with-the-actsaslist-gem/).

@@ -77,3 +77,13 @@ puts ""
 #=> 120 seconds is the duration of Dog from Youtube
 #=> 140 seconds is the duration of Banana from Vimeo
 #=> 240 seconds is the duration of Apple from Dailymotion
+
+john.videos.order(:title).each{|video| 
+  puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
+puts ""
+
+#=> Apple from Dailymotion has a duration of 240 seconds
+#=> Banana from Vimeo has a duration of 140 seconds
+#=> Cat from Youtube has a duration of 90 seconds
+#=> Dog from Youtube has a duration of 120 seconds
+#=> Orange from Dailymotion has a duration of 30 seconds
