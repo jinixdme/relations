@@ -192,7 +192,7 @@ Inspired by the article [Sorting and Reordering Has Many Through Associations Wi
 
 
 ## Combined scope conditions
-While the sort scope in the previous example was just another way to order a query result we now want a new scope condition for returning only videos with given minimum length.
+While the sort scope in the previous example was just another way to order a query result we now want a new scope condition for returning only videos with a given minimum length.
 
 **Video model**
 
@@ -200,7 +200,7 @@ While the sort scope in the previous example was just another way to order a que
 scope :duration_min, ->(seconds) { where(duration: seconds.to_i..Float::INFINITY) }
 ```
 
-Scopes can be combined: All videos with at least 100 seconds will be ordered by their engine names.
+Scopes can be combined: Display all videos with at least 100 seconds ordered by their engine names.
 
 ```ruby
 john.videos.duration_min(100).sort(:engine).each{|video| 
