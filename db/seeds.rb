@@ -43,7 +43,37 @@ puts playlist.videos.count
 
 john.likes.each{|like| puts like.video.title} 
 #=> Cat
-#   Dog
-#   Banana
-#   Apple
-#   Orange
+#=> Dog
+#=> Banana
+#=> Apple
+#=> Orange
+
+john.videos.sort(:title).each{|video| 
+  puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
+puts ""
+
+john.videos.sort(:engine).each{|video| 
+  puts Rainbow("#{video.engine.titleize}").yellow + " #{video.title} has a duration of #{video.duration} seconds"}
+puts ""
+
+john.videos.sort(:duration).each{|video| 
+  puts Rainbow("#{video.duration}").yellow + " seconds is the duration of #{video.title} from #{video.engine.titleize}"}
+puts ""
+
+#=> Apple from Dailymotion has a duration of 240 seconds
+#=> Banana from Vimeo has a duration of 140 seconds
+#=> Cat from Youtube has a duration of 90 seconds
+#=> Dog from Youtube has a duration of 120 seconds
+#=> Orange from Dailymotion has a duration of 30 seconds
+
+#=> Dailymotion Apple has a duration of 240 seconds
+#=> Dailymotion Orange has a duration of 30 seconds
+#=> Vimeo Banana has a duration of 140 seconds
+#=> Youtube Cat has a duration of 90 seconds
+#=> Youtube Dog has a duration of 120 seconds
+
+#=> 30 seconds is the duration of Orange from Dailymotion
+#=> 90 seconds is the duration of Cat from Youtube
+#=> 120 seconds is the duration of Dog from Youtube
+#=> 140 seconds is the duration of Banana from Vimeo
+#=> 240 seconds is the duration of Apple from Dailymotion

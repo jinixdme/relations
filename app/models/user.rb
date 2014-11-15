@@ -3,4 +3,5 @@ class User < ActiveRecord::Base
   
   has_many :playlists
   has_many :likes, :through => :playlists
+  has_many :videos, :through => :likes
 end

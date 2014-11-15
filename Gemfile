@@ -40,5 +40,5 @@ gem 'spring',        group: :development
 
 gem 'table_print', group: :development
 
-
+gem 'rainbow', group: :development
 

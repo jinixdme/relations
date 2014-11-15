@@ -115,3 +115,62 @@ john.likes.each{|like| puts like.video.title}
 ```
 
 Inspired by [Clipflakes](http://blog.clipflakes.tv/2011/05/26/relaunch-der-website/)' video search engine and playlist creation.
+
+
+##Order a has_many through association
+Now we want a sorted list of all videos John likes. The list has to be sorted by a given video attribute, e.g. the name of the engine or the duration. Instead of iterate through all Like's we want the video list through a has_many through association. Example:
+
+```ruby
+videos = john.videos.sort(:engine)
+```
+
+**User model**
+
+```ruby
+has_many :videos, :through => :likes
+```
+
+**Video model**
+
+```ruby
+scope :sort, ->(column) { order column }
+```
+
+Videos sorted by title, engine and duration:
+
+
+```ruby
+john.videos.sort(:title).each{|video| 
+  puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
+puts ""
+
+john.videos.sort(:engine).each{|video| 
+  puts Rainbow("#{video.engine.titleize}").yellow + "'s #{video.title} has a duration of #{video.duration} seconds"}
+puts ""
+
+john.videos.sort(:duration).each{|video| 
+  puts Rainbow("#{video.duration}").yellow + " seconds is the duration of #{video.title} from #{video.engine.titleize}"}
+puts ""
+```
+
+```
+=> Apple from Dailymotion has a duration of 240 seconds
+=> Banana from Vimeo has a duration of 140 seconds
+=> Cat from Youtube has a duration of 90 seconds
+=> Dog from Youtube has a duration of 120 seconds
+=> Orange from Dailymotion has a duration of 30 seconds
+
+=> Dailymotion Apple has a duration of 240 seconds
+=> Dailymotion Orange has a duration of 30 seconds
+=> Vimeo Banana has a duration of 140 seconds
+=> Youtube Cat has a duration of 90 seconds
+=> Youtube Dog has a duration of 120 seconds
+
+=> 30 seconds is the duration of Orange from Dailymotion
+=> 90 seconds is the duration of Cat from Youtube
+=> 120 seconds is the duration of Dog from Youtube
+=> 140 seconds is the duration of Banana from Vimeo
+=> 240 seconds is the duration of Apple from Dailymotion
+```
+
+Inspired by the article [Sorting and Reordering Has Many Through Associations With the ActsAsList Gem](http://easyactiverecord.com/blog/2014/11/11/sorting-and-reordering-lists-with-the-actsaslist-gem/).
