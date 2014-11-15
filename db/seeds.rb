@@ -6,36 +6,42 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-# $ rake db:drop db:create db:migrate db:seed
+# $ rake db:setup
 
 # Self-referential one-to-one relationship:
 john = User.create(first_name: 'John')
 heidi = User.create(first_name: 'Heidi')
+
 john.mother = heidi
+
 puts john.mother.first_name
 #=> Heidi
 
 # Join model many-to-many relationship:
-cat    = Video.create(title: 'Cat', engine: 'youtube', duration: 90)
-dog    = Video.create(title: 'Dog', engine: 'youtube', duration: 120)
-banana = Video.create(title: 'Banana', engine: 'vimeo', duration: 140)
-apple  = Video.create(title: 'Apple', engine: 'dailymotion', duration: 240)
-orange = Video.create(title: 'Orange', engine: 'dailymotion', duration: 30)
+animals = Video.create([
+  {title: 'Cat', engine: 'youtube', duration: 90},
+  {title: 'Dog', engine: 'youtube', duration: 120}])
 
 playlist = Playlist.create(name: 'Animals', user: john)
-playlist.likes << Like.create(video: cat)
-playlist.likes << Like.create(video: dog)
+
+playlist.likes << animals.map{|animal| Like.create(video: animal)}
+
 puts playlist.videos.count
 #=> 2
 
+fruits = Video.create([
+  {title: 'Banana', engine: 'vimeo', duration: 140},
+  {title: 'Apple', engine: 'dailymotion', duration: 240},
+  {title: 'Orange', engine: 'dailymotion', duration: 30}])
+
 playlist = Playlist.create(name: 'Fruits', user: john)
-playlist.likes << Like.create(video: banana)
-playlist.likes << Like.create(video: apple)
-playlist.likes << Like.create(video: orange)
+
+playlist.likes << fruits.map{|fruit| Like.create(video: fruit)}
+
 puts playlist.videos.count
 #=> 3
 
-john.likes.each { |like| puts like.video.title } 
+john.likes.each{|like| puts like.video.title} 
 #=> Cat
 #   Dog
 #   Banana

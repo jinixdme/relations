@@ -7,7 +7,7 @@ The magic happens within the migrations, the models and db/seed.rb.
 To test the examples just run:
 
 ```
-$ rake db:drop db:create db:migrate db:seed
+$ rake db:setup
 ```
 
 ## Self-referential one-to-one relationship
@@ -29,7 +29,9 @@ has_one :mother, class_name: 'User', foreign_key: 'mother_id'
 ```ruby
 john = User.create(first_name: 'John')
 heidi = User.create(first_name: 'Heidi')
+
 john.mother = heidi
+
 puts john.mother.first_name
 ```
 
@@ -72,14 +74,14 @@ belongs_to :playlist
 **db/seed**
 
 ```ruby
-cat = Video.create(title: 'Cat', engine: 'youtube', duration: 90)
-dog = Video.create(title: 'Dog', engine: 'youtube', duration: 120)
-banana = Video.create(title: 'Banana', engine: 'vimeo', duration: 140)
-apple = Video.create(title: 'Apple', engine: 'dailymotion', duration: 240)
-orange = Video.create(title: 'Orange', engine: 'dailymotion', duration: 30)
+animals = Video.create([
+  {title: 'Cat', engine: 'youtube', duration: 90},
+  {title: 'Dog', engine: 'youtube', duration: 120}])
+
 playlist = Playlist.create(name: 'Animals', user: john)
-playlist.likes << Like.create(video: cat)
-playlist.likes << Like.create(video: dog)
+
+playlist.likes << animals.map{|animal| Like.create(video: animal)}
+
 puts playlist.videos.count
 ```
 ```
@@ -87,19 +89,21 @@ puts playlist.videos.count
 ```
 
 ```ruby
-playlist = Playlist.create(name: 'Fruits', user: john)
-playlist.likes << Like.create(video: banana)
-playlist.likes << Like.create(video: apple)
-playlist.likes << Like.create(video: orange)
-puts playlist.videos.count
-```
+fruits = Video.create([
+  {title: 'Banana', engine: 'vimeo', duration: 140},
+  {title: 'Apple', engine: 'dailymotion', duration: 240},
+  {title: 'Orange', engine: 'dailymotion', duration: 30}])
 
+playlist = Playlist.create(name: 'Fruits', user: john)
+
+playlist.likes << fruits.map{|fruit| Like.create(video: fruit)}
+```
 ```
 => 3
 ```
 
 ```ruby
-john.likes.each { |like| puts like.video.title } 
+john.likes.each{|like| puts like.video.title}
 ```
 
 ```
