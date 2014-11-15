@@ -200,7 +200,7 @@ While the sort scope in the previous example was just another way to order a que
 scope :duration_min, ->(seconds) { where(duration: seconds.to_i..Float::INFINITY) }
 ```
 
-Scopes can be combined: Display all videos with at least 100 seconds ordered by their engine names.
+Scopes can be combined: Display all videos with at least 100 seconds ordered by their engine names:
 
 ```ruby
 john.videos.duration_min(100).sort(:engine).each{|video| 
@@ -213,3 +213,61 @@ puts ""
 => Vimeo Banana has a duration of 140 seconds
 => Youtube Dog has a duration of 120 seconds
 ```
+
+## Merging scopes with joins
+
+We now want all videos from a specific playlist. We can do this by combining a join with a merge condition.
+
+**Video model**
+
+```ruby
+has_many :likes
+has_many :playlist, :through => :likes
+scope :list, ->(name) { joins(:playlist).merge( Playlist.where(name: name) )}
+```
+
+```ruby
+%w[Animals Fruits].each do |name|
+  john.videos.list(name).each{|video| 
+  puts "Playlist " + Rainbow("#{video.playlist.first.name}").yellow + " has video " + Rainbow("#{video.title}").yellow + " from #{video.engine.titleize}"}
+end
+```
+
+```
+=> Playlist Animals has video Cat from Youtube
+=> Playlist Animals has video Dog from Youtube
+=> Playlist Fruits has video Banana from Vimeo
+=> Playlist Fruits has video Apple from Dailymotion
+=> Playlist Fruits has video Orange from Dailymotion
+```
+
+*Merge can also call a scope*
+
+Let's search for all playlists that have at least one Vimeo video.
+
+**Video model**
+
+```ruby
+scope :vimeo, -> { where(engine: 'vimeo') }
+```
+
+**Playlist model**
+
+```ruby
+scope :vimeo, -> { joins(:videos).merge( Video.vimeo ) }
+```
+
+```ruby
+# how many videos from Vimeo do we have?
+puts Video.vimeo.count
+# display the title of the first Vimeo video in the first playlist 
+# that has at least one video from Vimeo
+puts john.playlists.vimeo.first.videos.vimeo.first.title
+```
+
+```
+#=> 1
+#=> Banana
+```
+
+Inspired by [Railscasts '#215 Advanced Queries in Rails 3'](http://railscasts.com/episodes/215-advanced-queries-in-rails-3)

@@ -15,6 +15,7 @@ heidi = User.create(first_name: 'Heidi')
 john.mother = heidi
 
 puts john.mother.first_name
+puts ""
 #=> Heidi
 
 puts "Join model many-to-many relationship:"
@@ -42,6 +43,7 @@ puts playlist.videos.count
 #=> 3
 
 john.likes.each{|like| puts like.video.title} 
+puts ""
 #=> Cat
 #=> Dog
 #=> Banana
@@ -89,7 +91,26 @@ puts ""
 
 puts "Combined scope conditions:"
 john.videos.duration_min(100).sort(:engine).each{|video| 
-  puts Rainbow("#{video.engine.titleize}").yellow + " #{video.title} has a duration of #{video.duration} seconds"}
+  puts Rainbow("#{video.engine.titleize}").yellow + " video #{video.title} has a duration of " + Rainbow("#{video.duration}").yellow + " seconds"}
+puts ""
 #=> Dailymotion Apple has a duration of 240 seconds
 #=> Vimeo Banana has a duration of 140 seconds
 #=> Youtube Dog has a duration of 120 seconds
+
+puts "Merging scopes with joins:"
+%w[Animals Fruits].each do |name|
+  john.videos.list(name).each{|video| 
+  puts "Playlist " + Rainbow("#{video.playlist.first.name}").yellow + " has video " + Rainbow("#{video.title}").yellow + " from #{video.engine.titleize}"}
+end
+puts ""
+#=> Playlist Animals has video Cat from Youtube
+#=> Playlist Animals has video Dog from Youtube
+#=> Playlist Fruits has video Banana from Vimeo
+#=> Playlist Fruits has video Apple from Dailymotion
+#=> Playlist Fruits has video Orange from Dailymotion
+
+puts "Merging scopes with joins:"
+puts Video.vimeo.count
+puts john.playlists.vimeo.first.videos.vimeo.first.title
+#=> 1
+#=> Banana
