@@ -80,7 +80,6 @@ animals = Video.create([
 
 # to create a user playlist we use the create method of the association proxy
 playlist = john.playlists.create name: 'Animals'
-
 # the foreign keys will be automatically set and the objects will be automatically saved by the << method
 playlist.likes << animals.map{|animal| Like.create video: animal}
 
@@ -245,8 +244,10 @@ end
 ```
 
 ```
+=> Playlist Animals has an average duration of 105 seconds
 => Playlist Animals has video Cat from Youtube
 => Playlist Animals has video Dog from Youtube
+=> Playlist Fruits has an average duration of 136 seconds
 => Playlist Fruits has video Banana from Vimeo
 => Playlist Fruits has video Apple from Dailymotion
 => Playlist Fruits has video Orange from Dailymotion
@@ -273,8 +274,7 @@ scope :vimeo, -> { joins(:videos).merge( Video.vimeo ) }
 ```ruby
 # how many videos from Vimeo do we have?
 puts Video.vimeo.count
-# display the title of the first Vimeo video in the first playlist 
-# that has at least one video from Vimeo
+# display the title of the first Vimeo video in the first playlist that has at least one video from Vimeo
 puts john.playlists.vimeo.first.videos.vimeo.first.title
 ```
 
