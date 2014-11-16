@@ -36,7 +36,7 @@ puts john.mother.first_name
 ```
 
 ```
-=> Heidi
+=> John's mother is Heidi
 ```
 
 ## Join model many-to-many relationship
@@ -78,9 +78,11 @@ animals = Video.create([
   {title: 'Cat', engine: 'youtube', duration: 90},
   {title: 'Dog', engine: 'youtube', duration: 120}])
 
-playlist = Playlist.create(name: 'Animals', user: john)
+# to create a user playlist we use the create method of the association proxy
+playlist = john.playlists.create name: 'Animals'
 
-playlist.likes << animals.map{|animal| Like.create(video: animal)}
+# the foreign keys will be automatically set and the objects will be automatically saved by the << method
+playlist.likes << animals.map{|animal| Like.create video: animal}
 
 puts playlist.videos.count
 ```
@@ -94,9 +96,9 @@ fruits = Video.create([
   {title: 'Apple', engine: 'dailymotion', duration: 240},
   {title: 'Orange', engine: 'dailymotion', duration: 30}])
 
-playlist = Playlist.create(name: 'Fruits', user: john)
-
-playlist.likes << fruits.map{|fruit| Like.create(video: fruit)}
+playlist = john.playlists.create name: 'Fruits'
+# the << method takes both a single associated object or an array of objects
+playlist.likes << fruits.map{|fruit| Like.create video: fruit}
 ```
 ```
 => 3
@@ -117,7 +119,8 @@ john.likes.each{|like| puts like.video.title}
 Inspired by [Clipflakes](http://blog.clipflakes.tv/2011/05/26/relaunch-der-website/)' video search engine and playlist creation.
 
 
-##Order a has_many through association
+## Order a has_many through association
+
 Now we want a sorted list of all videos John likes. The list has to be sorted by a given video attribute, e.g. the name of the engine or the duration. Instead of iterate through all Like's we want the video list through an additional has_many through association. Example:
 
 ```ruby
@@ -138,6 +141,7 @@ scope :sort, ->(column) { order column }
 
 Videos sorted by title, engine and duration:
 
+**db/seed**
 
 ```ruby
 john.videos.sort(:title).each{|video| 
@@ -173,7 +177,7 @@ puts ""
 => 240 seconds is the duration of Apple from Dailymotion
 ```
 
-The ActiveRecord query method order() works the same:
+The ActiveRecord::Base order method works the same. It's one of the association collection wrapper methods.
 
 ```ruby
 john.videos.order(:title).each{|video| 
@@ -192,6 +196,7 @@ Inspired by the article [Sorting and Reordering Has Many Through Associations Wi
 
 
 ## Combined scope conditions
+
 While the sort scope in the previous example was just another way to order a query result we now want a new scope condition for returning only videos with a given minimum length.
 
 **Video model**
@@ -200,7 +205,9 @@ While the sort scope in the previous example was just another way to order a que
 scope :duration_min, ->(seconds) { where(duration: seconds.to_i..Float::INFINITY) }
 ```
 
-Scopes can be combined: Display all videos with at least 100 seconds ordered by their engine names:
+Scopes can be combined: display all videos with at least 100 seconds ordered by their engine names:
+
+**db/seed**
 
 ```ruby
 john.videos.duration_min(100).sort(:engine).each{|video| 
@@ -226,10 +233,14 @@ has_many :playlist, :through => :likes
 scope :list, ->(name) { joins(:playlist).merge( Playlist.where(name: name) )}
 ```
 
+**db/seed**
+
 ```ruby
 %w[Animals Fruits].each do |name|
+  # use of association collection average method
+  puts "Playlist " + Rainbow("#{name}").yellow + " has an average duration of " + Rainbow("#{john.videos.list(name).average(:duration).to_i}").yellow + " seconds"
   john.videos.list(name).each{|video| 
-  puts "Playlist " + Rainbow("#{video.playlist.first.name}").yellow + " has video " + Rainbow("#{video.title}").yellow + " from #{video.engine.titleize}"}
+  puts "Playlist " + Rainbow("#{name}").yellow + " has video " + Rainbow("#{video.title}").yellow + " from #{video.engine.titleize}"}
 end
 ```
 
@@ -256,6 +267,8 @@ scope :vimeo, -> { where(engine: 'vimeo') }
 ```ruby
 scope :vimeo, -> { joins(:videos).merge( Video.vimeo ) }
 ```
+
+**db/seed**
 
 ```ruby
 # how many videos from Vimeo do we have?
