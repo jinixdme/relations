@@ -32,7 +32,7 @@ heidi = User.create(first_name: 'Heidi')
 
 john.mother = heidi
 
-puts john.mother.first_name
+puts "John's mother is " + Rainbow("#{john.mother.first_name}").yellow
 ```
 
 ```
@@ -85,6 +85,7 @@ playlist.likes << animals.map{|animal| Like.create video: animal}
 
 puts playlist.videos.count
 ```
+
 ```
 => 2
 ```
@@ -98,7 +99,10 @@ fruits = Video.create([
 playlist = john.playlists.create name: 'Fruits'
 # the << method takes both a single associated object or an array of objects
 playlist.likes << fruits.map{|fruit| Like.create video: fruit}
+
+puts playlist.videos.count
 ```
+
 ```
 => 3
 ```
@@ -145,15 +149,12 @@ Videos sorted by title, engine and duration:
 ```ruby
 john.videos.sort(:title).each{|video| 
   puts Rainbow("#{video.title}").yellow + " from #{video.engine.titleize} has a duration of #{video.duration} seconds"}
-puts ""
 
 john.videos.sort(:engine).each{|video| 
   puts Rainbow("#{video.engine.titleize}").yellow + "'s #{video.title} has a duration of #{video.duration} seconds"}
-puts ""
 
 john.videos.sort(:duration).each{|video| 
   puts Rainbow("#{video.duration}").yellow + " seconds is the duration of #{video.title} from #{video.engine.titleize}"}
-puts ""
 ```
 
 ```
@@ -211,7 +212,6 @@ Scopes can be combined: display all videos with at least 100 seconds ordered by 
 ```ruby
 john.videos.duration_min(100).sort(:engine).each{|video| 
   puts Rainbow("#{video.engine.titleize}").yellow + " #{video.title} has a duration of #{video.duration} seconds"}
-puts ""
 ```
 
 ```
